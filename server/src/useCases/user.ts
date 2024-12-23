@@ -3,8 +3,8 @@ import { UserModel } from "@models/user";
 import { AppError, transformMongooseValidationError } from "@src/common/errors";
 import type { User, RegisterUserDTO, LoginUserDTO } from "@common/types";
 
-export async function registerUseCase(body: RegisterUserDTO): Promise<User> {
-    const existingUser = await UserModel.findOne({ email: body.email });
+export async function registerUseCase(body: RegisterUserDTO, model: typeof UserModel): Promise<User> {
+    const existingUser = await model.findOne({ email: body.email });
 
     if (existingUser) {
         throw new AppError({
@@ -18,7 +18,7 @@ export async function registerUseCase(body: RegisterUserDTO): Promise<User> {
         });
     }
 
-    const user = new UserModel({
+    const user = new model({
         ...body,
         auth: { password: body.password }
     });
@@ -34,8 +34,8 @@ export async function registerUseCase(body: RegisterUserDTO): Promise<User> {
     return user.toObject();
 }
 
-export async function loginUseCase(body: LoginUserDTO): Promise<string> {
-    const user = await UserModel.findOne({ email: body.email });
+export async function loginUseCase(body: LoginUserDTO, model: typeof UserModel): Promise<string> {
+    const user = await model.findOne({ email: body.email });
 
     if (!user) {
         throw new AppError({
