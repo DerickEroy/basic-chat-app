@@ -4,7 +4,6 @@ import mongoose from "mongoose";
 import { DB_URI } from "@common/config";
 
 (async () => {
-
     try {
         await mongoose.connect(DB_URI).then(() => console.log('Connected to MongoDB'));
 
@@ -17,5 +16,4 @@ import { DB_URI } from "@common/config";
         console.error(error);
         process.exit(1);
     }
-
 })();

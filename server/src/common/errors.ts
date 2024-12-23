@@ -23,6 +23,7 @@ export class AppError extends Error {
         this.cause = cause;
     }
 
+    /** Returns an object with all properties */
     toObject() {
         return {
             ...this,

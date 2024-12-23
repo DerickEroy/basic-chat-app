@@ -19,9 +19,9 @@ beforeEach(async () => {
     if (mongoose.connection.db) {
         const collections = await mongoose.connection.db.collections();
 
-        for (let collection of collections) {
+        collections.forEach(async (collection) => {
             await collection.deleteMany({});
-        }
+        });
     } else {
         throw new Error('MongoDB connection is not established');
     }

@@ -23,17 +23,17 @@ export const userSchema = new mongoose.Schema<User>({
     },
     auth: {
         type: {
-            password: {
-                type: String,
-                cast: 'must be a string',
-                required: [true, 'required'],
-                minLength: [8, 'too short']
-            },
             role: {
                 type: String,
                 enum: ['user', 'admin'],
                 cast: 'must be a string',
                 default: 'user'
+            },
+            password: {
+                type: String,
+                cast: 'must be a string',
+                required: [true, 'required'],
+                minLength: [8, 'too short']
             },
             sessionToken: {
                 type: String,
