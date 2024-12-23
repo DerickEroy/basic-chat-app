@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import type { Cause } from "./types";
 
 export class AppError extends Error {
@@ -40,4 +41,24 @@ export class AppError extends Error {
             originalError: error
         });
     }
+}
+
+export function transformMongooseValidationError(error: mongoose.Error.ValidationError, message?: string) {
+    const cause: Cause = [];
+
+    for (const [path, details] of Object.entries(error.errors)) {
+        cause.push({
+            path: path.split('.'),
+            value: details.value,
+            message: details.message
+        });
+    }
+
+    return new AppError({
+        message: message ?? error.message,
+        statusCode: 400,
+        isOperational: true,
+        originalError: error,
+        cause
+    });
 }

@@ -1,5 +1,5 @@
 import { UserModel } from "@models/user";
-import { AppError } from "@src/common/errors";
+import { AppError, transformMongooseValidationError } from "@src/common/errors";
 import bcrypt from "bcryptjs";
 import type { User, RegisterUserDTO, LoginUserDTO } from "@common/types";
 
@@ -23,6 +23,10 @@ export async function registerUseCase(body: RegisterUserDTO): Promise<User> {
         auth: { password: body.password }
     });
 
+    await user.validate().catch(error => {
+        throw transformMongooseValidationError(error, 'Invalid user document. Could be due to invalid register request body.');
+    });
+
     user.hashPassword();
 
     await user.save();
@@ -35,7 +39,7 @@ export async function loginUseCase(body: LoginUserDTO): Promise<string> {
 
     if (!user) {
         throw new AppError({
-            message: 'User not found',
+            message: 'User could not found',
             statusCode: 404,
             isOperational: true,
             cause: [{
