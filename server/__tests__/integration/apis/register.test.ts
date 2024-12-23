@@ -4,17 +4,17 @@ import app from "@src/app";
 
 describe('API User', () => {
     describe('register', () => {
+        const validBody = {
+            fName: "User",
+            lName: "Register",
+            email: "userregistertest@email.com",
+            password: "password@123"
+        };
+        
         it('should respond with 201 status and a new user document if given a valid request body', async () => {
-            const body = {
-                fName: "User",
-                lName: "Register",
-                email: "userregistertest@email.com",
-                password: "password@123"
-            };
+            const response = await supertest(app).post("/users/register").send(validBody);
 
-            const response = await supertest(app).post("/users/register").send(body);
-
-            const isPasswordHashed = bcrypt.compareSync(body.password, response.body.auth.password);
+            const isPasswordHashed = bcrypt.compareSync(validBody.password, response.body.auth.password);
 
             expect(response.status).toBe(201);
             expect(response.body).toMatchObject({

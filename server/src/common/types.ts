@@ -1,6 +1,7 @@
 import type mongoose from "mongoose";
 import type { userSchema } from "@models/user";
 
+/** Cause property of app error */
 export type Cause = {
     path: string[],
     value: any,

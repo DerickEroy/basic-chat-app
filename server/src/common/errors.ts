@@ -4,44 +4,37 @@ import type { Cause } from "./types";
 export class AppError extends Error {
     name = this.constructor.name;
     isOperational: boolean;
+    originalError: Error;
+    cause?: Cause;
 
-    constructor(message: string, isOperational: boolean) {
+    constructor(
+        { message, isOperational, originalError, cause }: {
+            message: string;
+            isOperational: boolean;
+            originalError: Error;
+            cause?: Cause;
+        }
+    ) {
         super(message);
         this.isOperational = isOperational;
+        this.originalError = originalError;
+        this.cause = cause;
     }
 
-    toObject() {
+    toObject(): object {
         return {
             ...this,
             message: this.message
         }
     }
-}
 
-export class InternalError extends AppError {
-    error: Error;
-
-    constructor(error: Error) {
-        super(error.message, false);
-        this.error = error;
-    }
-}
-
-export class ValidationError extends AppError {
-    cause: Cause;
-
-    constructor(message: string, cause: Cause) {
-        super(message, true);
-        this.cause = cause;
-    }
-}
-
-export class DuplicateError extends AppError {
-    cause: Cause;
-
-    constructor(message: string, cause: Cause) {
-        super(message, true);
-        this.cause = cause;
+    /** Creates an instance of AppError from a native js Error */
+    static default(error: Error) {
+        return new AppError({
+            message: error.message,
+            isOperational: false,
+            originalError: error
+        });
     }
 }
 
@@ -56,12 +49,18 @@ export function transformMongooseValidationError(error: mongoose.Error.Validatio
         });
     }
 
-    return new ValidationError(error.message, cause);
+    return new AppError({
+        message: error.message,
+        isOperational: true,
+        originalError: error,
+        cause
+    });
 }
 
 export function transformMongoServerError(error: mongoose.mongo.MongoServerError) {
+
+    /** 11000 DuplicateKey */
     if (error.code === 11000) {
-        // Duplicate Key Error
         const keyValueEntry = Object.entries(error.keyValue);
 
         const cause: Cause = [];
@@ -71,8 +70,17 @@ export function transformMongoServerError(error: mongoose.mongo.MongoServerError
             value: keyValueEntry[0][1]
         });
 
-        return new DuplicateError(error.message, cause);
+        return new AppError({
+            message: error.message,
+            isOperational: true,
+            originalError: error,
+            cause
+        });
     } else {
-        return new InternalError(error);
+        return new AppError({
+            message: error.message,
+            isOperational: false,
+            originalError: error
+        });
     }
 }

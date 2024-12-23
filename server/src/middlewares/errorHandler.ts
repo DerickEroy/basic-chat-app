@@ -1,4 +1,4 @@
-import { InternalError, transformMongooseValidationError, transformMongoServerError } from "@common/errors";
+import { AppError, transformMongooseValidationError, transformMongoServerError } from "@common/errors";
 import express from "express";
 import mongoose from "mongoose";
 
@@ -13,13 +13,12 @@ export function errorHandler(error: any, req: express.Request, res: express.Resp
         const errorResponse = transformMongoServerError(error).toObject();
 
         if (error.code === 11000) {
-            // Duplicate Key Error
             res.status(409).json(errorResponse);
         } else {
             res.status(500).json(errorResponse);
         }
     } else {
-        const errorResponse = (new InternalError(error)).toObject();
+        const errorResponse = AppError.default(error).toObject();
         
         res.status(500).json(errorResponse);
     }
