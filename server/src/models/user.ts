@@ -52,8 +52,6 @@ userSchema.method('hashPassword', async function(salt = 10) {
 
     this.auth.password = hashedPassword;
 
-    await this.save();
-
     return hashedPassword;
 });
 
@@ -62,8 +60,6 @@ userSchema.method('createSessionToken', async function() {
     const sessionToken = jwt.sign({ role: this.auth.role }, SECRET_KEY, { expiresIn: '24h', subject: this.id });
 
     this.auth.sessionToken = sessionToken;
-
-    await this.save();
 
     return sessionToken;
 });
