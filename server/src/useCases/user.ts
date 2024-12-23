@@ -1,8 +1,8 @@
-import * as types from "@common/types";
 import { UserModel } from "@models/user";
 import { AppError } from "@src/common/errors";
+import type { User, RegisterUserDTO, LoginUserDTO } from "@common/types";
 
-export async function register(body: types.RegisterUserDTO): Promise<types.User> {
+export async function registerUseCase(body: RegisterUserDTO): Promise<User> {
     const user = new UserModel({
         ...body,
         auth: { password: body.password }
@@ -13,10 +13,11 @@ export async function register(body: types.RegisterUserDTO): Promise<types.User>
     return user.toObject();
 }
 
-export async function login(body: types.LoginUserDTO): Promise<string> {
+export async function loginUseCase(body: LoginUserDTO): Promise<string> {
     const user = await UserModel.findOne({ email: body.email }).orFail(() =>{
         throw new AppError({
             message: 'User not found',
+            statusCode: 404,
             isOperational: true,
             cause: [{
                 path: ['email'],

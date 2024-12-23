@@ -3,25 +3,28 @@ import type { Cause } from "./types";
 
 export class AppError extends Error {
     name = this.constructor.name;
+    statusCode: number;
     isOperational: boolean;
     originalError?: Error;
     cause?: Cause;
 
     constructor(
-        { message, isOperational, originalError, cause }: {
+        { message, statusCode, isOperational, originalError, cause }: {
             message: string;
+            statusCode: number;
             isOperational: boolean;
             originalError?: Error;
             cause?: Cause;
         }
     ) {
         super(message);
+        this.statusCode = statusCode;
         this.isOperational = isOperational;
         this.originalError = originalError;
         this.cause = cause;
     }
 
-    toObject(): object {
+    toObject() {
         return {
             ...this,
             message: this.message
@@ -32,6 +35,7 @@ export class AppError extends Error {
     static default(error: Error) {
         return new AppError({
             message: error.message,
+            statusCode: 500,
             isOperational: false,
             originalError: error
         });
@@ -51,6 +55,7 @@ export function transformMongooseValidationError(error: mongoose.Error.Validatio
 
     return new AppError({
         message: error.message,
+        statusCode: 400,
         isOperational: true,
         originalError: error,
         cause
@@ -72,6 +77,7 @@ export function transformMongoServerError(error: mongoose.mongo.MongoServerError
 
         return new AppError({
             message: error.message,
+            statusCode: 409,
             isOperational: true,
             originalError: error,
             cause
@@ -79,6 +85,7 @@ export function transformMongoServerError(error: mongoose.mongo.MongoServerError
     } else {
         return new AppError({
             message: error.message,
+            statusCode: 500,
             isOperational: false,
             originalError: error
         });

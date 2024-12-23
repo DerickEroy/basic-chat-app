@@ -57,11 +57,7 @@ userSchema.pre('save', function(next) {
 
 /** Sets and returns the session token property */
 userSchema.method('createSessionToken', async function() {
-    const token = jwt.sign(
-        { role: this.auth.role },
-        SECRET_KEY,
-        { expiresIn: '24h', subject: this.id }
-    );
+    const token = jwt.sign({ role: this.auth.role }, SECRET_KEY, { expiresIn: '24h', subject: this.id });
 
     this.auth.sessionToken = token;
 
