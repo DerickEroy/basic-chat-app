@@ -24,7 +24,7 @@ export async function registerUseCase(body: RegisterUserDTO): Promise<User> {
     });
 
     await user.validate().catch(error => {
-        throw transformMongooseValidationError(error, 'Invalid user document. Could be due to invalid register request body.');
+        throw transformMongooseValidationError(error, 422, 'Invalid user document. Could be due to invalid register request body.');
     });
 
     user.hashPassword();

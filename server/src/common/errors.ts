@@ -43,7 +43,7 @@ export class AppError extends Error {
     }
 }
 
-export function transformMongooseValidationError(error: mongoose.Error.ValidationError, message?: string) {
+export function transformMongooseValidationError(error: mongoose.Error.ValidationError, statusCode: 400 | 422, message?: string) {
     const cause: Cause = [];
 
     for (const [path, details] of Object.entries(error.errors)) {
@@ -56,7 +56,7 @@ export function transformMongooseValidationError(error: mongoose.Error.Validatio
 
     return new AppError({
         message: message ?? error.message,
-        statusCode: 400,
+        statusCode,
         isOperational: true,
         originalError: error,
         cause
