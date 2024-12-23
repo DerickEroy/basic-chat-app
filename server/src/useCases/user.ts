@@ -25,6 +25,8 @@ export async function registerUseCase(body: RegisterUserDTO): Promise<User> {
 
     user.hashPassword();
 
+    await user.save();
+
     return user.toObject();
 }
 
@@ -58,6 +60,8 @@ export async function loginUseCase(body: LoginUserDTO): Promise<string> {
     }
 
     const token = user.createSessionToken();
+
+    await user.save();
 
     return token;
 }
