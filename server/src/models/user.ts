@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { SECRET_KEY } from "@src/common/config";
-import { User } from "@src/common/types";
+import type { User } from "@src/common/types";
 
 export const userSchema = new mongoose.Schema<User>({
     fName: {

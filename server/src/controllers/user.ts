@@ -1,5 +1,5 @@
-import { loginUseCase, registerUseCase } from "@src/useCases/user";
 import express from "express";
+import { loginUseCase, registerUseCase } from "@src/useCases/user";
 
 export async function registerController(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {

@@ -1,6 +1,6 @@
+import bcrypt from "bcryptjs";
 import { UserModel } from "@models/user";
 import { AppError, transformMongooseValidationError } from "@src/common/errors";
-import bcrypt from "bcryptjs";
 import type { User, RegisterUserDTO, LoginUserDTO } from "@common/types";
 
 export async function registerUseCase(body: RegisterUserDTO): Promise<User> {
