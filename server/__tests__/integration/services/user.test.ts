@@ -21,7 +21,7 @@ describe('SERVICES User', () => {
                 email: 'userregistertest@email.com',
                 auth: {
                     // password already hashed
-                    isAdmin: false,
+                    role: 'user',
                     sessionToken: null
                 }
             });

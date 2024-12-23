@@ -1,6 +1,3 @@
-import type mongoose from "mongoose";
-import type { userSchema } from "@models/user";
-
 /** Cause property of app error */
 export type Cause = {
     path: string[],
@@ -8,6 +5,27 @@ export type Cause = {
     message?: string
 }[];
 
-export type User = mongoose.InferSchemaType<typeof userSchema> & { _id?: mongoose.Types.ObjectId };
+export interface User {
+    fName: string;
+    lName: string;
+    email: string;
+    auth: {
+        role: 'user' | 'admin';
+        password: string;
+        sessionToken: null | string
+    }
 
-export type UserDTO = Pick<User, 'fName' | 'lName' | 'email'> & Pick<User['auth'], 'password'>;
+    createSessionToken: () => string
+};
+
+export interface RegisterUserDTO {
+    fName: string;
+    lName: string;
+    email: string;
+    password: string;
+};
+
+export interface LoginUserDTO {
+    email: string;
+    password: string;
+}

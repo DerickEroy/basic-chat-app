@@ -4,14 +4,14 @@ import type { Cause } from "./types";
 export class AppError extends Error {
     name = this.constructor.name;
     isOperational: boolean;
-    originalError: Error;
+    originalError?: Error;
     cause?: Cause;
 
     constructor(
         { message, isOperational, originalError, cause }: {
             message: string;
             isOperational: boolean;
-            originalError: Error;
+            originalError?: Error;
             cause?: Cause;
         }
     ) {
