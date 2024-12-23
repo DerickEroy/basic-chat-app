@@ -46,24 +46,26 @@ export const userSchema = new mongoose.Schema<User>({
     }
 });
 
-/** Hashes the password if document is new or password is modified */
-userSchema.pre('save', function(next) {
-    if (this.isDirectModified('auth.password') || this.isNew) {
-        this.auth.password = bcrypt.hashSync(this.auth.password);
-    }
+/** Sets and returns the hashed version of the password property*/
+userSchema.method('hashPassword', async function(salt = 10) {
+    const hashedPassword = bcrypt.hashSync(this.auth.password, salt);
 
-    next();
+    this.auth.password = hashedPassword;
+
+    await this.save();
+
+    return hashedPassword;
 });
 
 /** Sets and returns the session token property */
 userSchema.method('createSessionToken', async function() {
-    const token = jwt.sign({ role: this.auth.role }, SECRET_KEY, { expiresIn: '24h', subject: this.id });
+    const sessionToken = jwt.sign({ role: this.auth.role }, SECRET_KEY, { expiresIn: '24h', subject: this.id });
 
-    this.auth.sessionToken = token;
+    this.auth.sessionToken = sessionToken;
 
     await this.save();
 
-    return token;
+    return sessionToken;
 });
 
 export const UserModel = mongoose.model("User", userSchema);

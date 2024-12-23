@@ -4,7 +4,7 @@ import express from "express";
 export async function registerController(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
         const result = await registerUseCase(req.body);
-        res.status(201).json(result);
+        res.status(201).json(result).send();
     } catch (error) {
         next(error);
     }
@@ -21,7 +21,7 @@ export async function loginController(req: express.Request, res: express.Respons
             sameSite: 'strict'
         });
 
-        res.status(204);
+        res.status(204).send();
     } catch (error) {
         next(error);
     }
