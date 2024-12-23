@@ -4,7 +4,14 @@ import jwt from "jsonwebtoken";
 import { SECRET_KEY } from "@src/common/config";
 import type { User } from "@src/common/types";
 
-export const userSchema = new mongoose.Schema<User>({
+export const userSchema = new mongoose.Schema<
+    User,
+    mongoose.Model<User>,
+    {
+        hashPassword(salt?: number): string;
+        createSessionToken(): string;
+    }
+>({
     fName: {
         type: String,
         cast: 'must be a string',

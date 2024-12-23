@@ -14,9 +14,6 @@ export interface User {
         password: string;
         sessionToken: null | string
     }
-
-    hashPassword(salt?: number): string;
-    createSessionToken(): string;
 };
 
 export interface RegisterUserDTO {
