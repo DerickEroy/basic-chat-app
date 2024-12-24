@@ -8,6 +8,6 @@ export function errorHandler(error: any, req: express.Request, res: express.Resp
         res.status(error.statusCode).json(error.toObject());
     } else {
         const errorResponse = AppError.default(error).toObject();
-        res.status(500).json(errorResponse);
+        res.status(errorResponse.statusCode).json(errorResponse);
     }
 }
