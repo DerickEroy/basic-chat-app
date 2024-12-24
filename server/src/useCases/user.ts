@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import { UserModel } from "@models/user";
-import { AppError, transformMongooseValidationError } from "@src/common/errors";
+import { AppError } from "@src/common/errors";
 import type { User, RegisterUserDTO, LoginUserDTO } from "@common/types";
 
 export async function registerUseCase(body: RegisterUserDTO, model: typeof UserModel): Promise<User> {
@@ -23,9 +23,7 @@ export async function registerUseCase(body: RegisterUserDTO, model: typeof UserM
         auth: { password: body.password }
     });
 
-    await user.validate().catch(error => {
-        throw transformMongooseValidationError(error, 422, 'Invalid user document. Could be due to invalid register request body.');
-    });
+    await user.validate();
 
     user.hashPassword();
 

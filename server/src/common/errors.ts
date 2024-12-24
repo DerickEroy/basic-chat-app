@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import type { Cause } from "./types";
+import { ZodError } from "zod";
 
 export class AppError extends Error {
     name = this.constructor.name;
@@ -43,7 +44,7 @@ export class AppError extends Error {
     }
 }
 
-export function transformMongooseValidationError(error: mongoose.Error.ValidationError, statusCode: number, message?: string) {
+export function transformMongooseValidationError(error: mongoose.Error.ValidationError, message?: string) {
     const cause: Cause = [];
 
     for (const [path, details] of Object.entries(error.errors)) {
@@ -56,7 +57,33 @@ export function transformMongooseValidationError(error: mongoose.Error.Validatio
 
     return new AppError({
         message: message ?? error.message,
-        statusCode,
+        statusCode: 400,
+        isOperational: true,
+        originalError: error,
+        cause
+    });
+}
+
+export function transformZodError<Data extends Record<string, any>>(error: ZodError<Data>, data: Data) {
+    const cause: Cause = [];
+
+    for (const issue of error.issues) {
+        let value = data;
+
+        for (const subPath of issue.path) {
+            value = value[subPath];
+        }
+
+        cause.push({
+            path: issue.path,
+            message: issue.message,
+            value,
+        });
+    }
+
+    return new AppError({
+        message: 'Invalid request body',
+        statusCode: 400,
         isOperational: true,
         originalError: error,
         cause
