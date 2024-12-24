@@ -1,9 +1,9 @@
 import express from "express";
 import mongoose from "mongoose";
-import { ZodSchema } from "zod";
+import type { ZodSchema } from "zod";
 import { AppError, transformMongooseValidationError, transformZodError } from "@common/errors";
 
-export function errorHandler(error: any, req: express.Request, res: express.Response, next: express.NextFunction) {
+export function globalErrorHandler(error: any, req: express.Request, res: express.Response, next: express.NextFunction) {
     console.dir(error);
 
     if (error instanceof AppError) {
