@@ -82,7 +82,7 @@ export function transformZodError<Data extends Record<string, any>>(error: ZodEr
     }
 
     return new AppError({
-        message: 'Invalid request body',
+        message: error.message,
         statusCode: 400,
         isOperational: true,
         originalError: error,
