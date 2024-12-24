@@ -10,3 +10,4 @@ function exitDueToUndefinedCredential(cred: string) {
 
 export const DB_URI = process.env.DB_URI            ?? exitDueToUndefinedCredential("DB_URI")!;
 export const SECRET_KEY = process.env.SECRET_KEY    ?? exitDueToUndefinedCredential("SECRET_KEY")!;
+export const PORT = process.env.PORT                ?? exitDueToUndefinedCredential("PORT")!;
