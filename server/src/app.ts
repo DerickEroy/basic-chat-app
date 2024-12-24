@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import userRouter from "@routes/user";
-import { errorHandler } from "@middlewares/errorHandler";
+import { errorHandler } from "@src/common/middlewares";
 import { SECRET_KEY } from "./common/config";
 
 const app = express();
