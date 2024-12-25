@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import { UserModel } from "@models/user";
 import { AppError } from "@src/common/errors";
-import type { User, RegisterUserDTO, LoginUserDTO } from "@common/types";
+import type { RegisterUserDTO, LoginUserDTO } from "@common/types";
 
 export async function registerUseCase(body: RegisterUserDTO, model: typeof UserModel): Promise<string> {
     const existingUser = await model.findOne({ email: body.email });
