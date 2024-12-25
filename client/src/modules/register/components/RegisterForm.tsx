@@ -2,7 +2,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { useToggleShowPassword } from "../../../common/customHooks";
 
 export default function RegisterForm() {
-    const { handler, isShow } = useToggleShowPassword();
+    const { handler, flag } = useToggleShowPassword();
 
     return (
         <form className="container">
@@ -24,10 +24,10 @@ export default function RegisterForm() {
             <div className="form-group">
                 <label htmlFor="password">Password</label>
                 <div className="input-group">
-                    <input type={isShow ? 'text' : 'password'} id="password" name="password" className="form-control" />
+                    <input type={flag ? 'text' : 'password'} id="password" name="password" className="form-control" />
                     <div className="input-group-append">
                         <button onClick={handler} className="btn input-group-text">
-                            { isShow ? <FaEyeSlash /> : <FaEye /> }
+                            { flag ? <FaEyeSlash /> : <FaEye /> }
                         </button>
                     </div>
                 </div>
