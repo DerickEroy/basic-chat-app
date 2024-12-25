@@ -22,7 +22,7 @@ export default function LoginForm() {
                     </div>
                 </div>
             </div>
-            <button type="submit" className="btn btn-primary">Create</button>
+            <button type="submit" className="btn btn-primary">Log In</button>
         </form>
     )
 }
