@@ -1,16 +1,12 @@
 {
-    "setupFilesAfterEnv": [
-        "<rootDir>/__tests__/setup.ts"
-    ],
-    "testPathIgnorePatterns": [
-        "<rootDir>/__tests__/setup.ts"
+    "testMatch": [
+        "**/__tests__/integration/integration.test.ts"
     ],
     "moduleNameMapper": {
         "@src/(.*)": "<rootDir>/src/$1",
         "@routes/(.*)": "<rootDir>/src/routes/$1",
-        "@middlewares/(.*)": "<rootDir>/src/middlewares/$1",
         "@common/(.*)": "<rootDir>/src/common/$1",
-        "@services/(.*)": "<rootDir>/src/services/$1",
-        "@models/(.*)": "<rootDir>/src/models/$1"
+        "@models/(.*)": "<rootDir>/src/models/$1",
+        "@libs/(.*)": "<rootDir>/src/libs/$1"
     }
 }
