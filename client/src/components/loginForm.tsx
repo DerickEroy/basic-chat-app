@@ -1,9 +1,9 @@
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
-import { useToggleShowPassword } from "../common/customHooks";
+import { useButtonToggleFlag } from "../common/customHooks";
 import { Link } from "@tanstack/react-router";
 
 export default function LoginForm() {
-    const { handler, flag } = useToggleShowPassword();
+    const { handler, flag } = useButtonToggleFlag();
 
     return (
         <form className="container">
