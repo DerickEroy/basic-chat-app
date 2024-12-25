@@ -5,70 +5,73 @@ import { SECRET_KEY } from "@src/common/config";
 import type { User } from "@src/common/types";
 
 export const userSchema = new mongoose.Schema<
-    User,
-    mongoose.Model<User>,
-    {
-        hashPassword(salt?: number): string;
-        createSessionToken(): string;
-    }
+  User,
+  mongoose.Model<User>,
+  {
+    hashPassword(salt?: number): string;
+    createSessionToken(): string;
+  }
 >({
-    fName: {
+  fName: {
+    type: String,
+    cast: "must be a string",
+    required: [true, "required"],
+  },
+  lName: {
+    type: String,
+    cast: "must be a string",
+    required: [true, "required"],
+  },
+  email: {
+    type: String,
+    cast: "must be a string",
+    required: [true, "required"],
+    unique: true,
+  },
+  auth: {
+    type: {
+      role: {
         type: String,
-        cast: 'must be a string',
-        required: [true, 'required']
-    },
-    lName: {
+        enum: ["user", "admin"],
+        cast: "must be a string",
+        default: "user",
+      },
+      password: {
         type: String,
-        cast: 'must be a string',
-        required: [true, 'required']
-    },
-    email: {
+        cast: "must be a string",
+        required: [true, "required"],
+        minLength: [8, "too short"],
+      },
+      sessionToken: {
         type: String,
-        cast: 'must be a string',
-        required: [true, 'required'],
-        unique: true
+        cast: "must be a string",
+        default: null,
+      },
     },
-    auth: {
-        type: {
-            role: {
-                type: String,
-                enum: ['user', 'admin'],
-                cast: 'must be a string',
-                default: 'user'
-            },
-            password: {
-                type: String,
-                cast: 'must be a string',
-                required: [true, 'required'],
-                minLength: [8, 'too short']
-            },
-            sessionToken: {
-                type: String,
-                cast: 'must be a string',
-                default: null
-            }
-        },
-        _id: false,
-        required: [true, 'required']
-    }
+    _id: false,
+    required: [true, "required"],
+  },
 });
 
 /** Sets and returns the hashed version of the password property*/
-userSchema.method('hashPassword', async function(salt = 10) {
-    const hashedPassword = bcrypt.hashSync(this.auth.password, salt);
+userSchema.method("hashPassword", async function (salt = 10) {
+  const hashedPassword = bcrypt.hashSync(this.auth.password, salt);
 
-    this.auth.password = hashedPassword;
+  this.auth.password = hashedPassword;
 
-    return hashedPassword;
+  return hashedPassword;
 });
 
 /** Sets and returns the session token property */
-userSchema.method('createSessionToken', async function() {
-    const sessionToken = jwt.sign({ role: this.auth.role }, SECRET_KEY, { expiresIn: '24h', subject: this.id });
+userSchema.method("createSessionToken", async function () {
+  const sessionToken = jwt.sign({ role: this.auth.role }, SECRET_KEY, {
+    expiresIn: "24h",
+    subject: this.id,
+  });
 
-    this.auth.sessionToken = sessionToken;
+  this.auth.sessionToken = sessionToken;
 
-    return sessionToken;
+  return sessionToken;
 });
 
 export const UserModel = mongoose.model("User", userSchema);

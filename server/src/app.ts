@@ -10,7 +10,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser(SECRET_KEY));
-app.use('/users', userRouter());
+app.use("/users", userRouter());
 app.use(globalErrorHandler);
 
 export default app;

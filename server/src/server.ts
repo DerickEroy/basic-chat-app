@@ -4,9 +4,11 @@ import { connectToMongoDB } from "./common/database";
 import { PORT } from "./common/config";
 
 (async () => {
-    await connectToMongoDB();
+  await connectToMongoDB();
 
-    const server = http.createServer(app);
+  const server = http.createServer(app);
 
-    server.listen(PORT, () => console.log(`Server open at http://localhost:${PORT}`));
+  server.listen(PORT, () =>
+    console.log(`Server open at http://localhost:${PORT}`)
+  );
 })();
