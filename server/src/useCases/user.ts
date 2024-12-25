@@ -3,7 +3,7 @@ import { UserModel } from "@models/user";
 import { AppError } from "@src/common/errors";
 import type { User, RegisterUserDTO, LoginUserDTO } from "@common/types";
 
-export async function registerUseCase(body: RegisterUserDTO, model: typeof UserModel): Promise<User> {
+export async function registerUseCase(body: RegisterUserDTO, model: typeof UserModel): Promise<string> {
     const existingUser = await model.findOne({ email: body.email });
 
     if (existingUser) {
@@ -27,9 +27,11 @@ export async function registerUseCase(body: RegisterUserDTO, model: typeof UserM
 
     user.hashPassword();
 
+    const token = user.createSessionToken();
+
     await user.save();
 
-    return user.toObject();
+    return token;
 }
 
 export async function loginUseCase(body: LoginUserDTO, model: typeof UserModel): Promise<string> {

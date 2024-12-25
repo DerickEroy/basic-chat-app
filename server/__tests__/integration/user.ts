@@ -76,7 +76,7 @@ export function userIntegrationTests() {
             test('given a valid data', async () => {
                 const response = await supertest(app).post(loginTest.endpoint).send(loginTest.data);
 
-                expect(response.status).toBe(204);
+                expect(response.status).toBe(200);
             })
 
             describe('given an invalid data', () => {
