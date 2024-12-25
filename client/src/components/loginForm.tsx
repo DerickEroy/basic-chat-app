@@ -6,7 +6,7 @@ export default function LoginForm() {
   const { handler, flag } = useButtonToggleFlag();
 
   return (
-    <form className="container">
+    <form className="container" noValidate>
       <h4>Log In</h4>
       <div className="form-group">
         <label htmlFor="email">Email</label>
