@@ -1,7 +1,7 @@
 /** Cause property of app error */
 export type Cause = {
   path: (string | number)[];
-  value: any;
+  value?: unknown;
   message?: string;
 }[];
 
