@@ -11,13 +11,14 @@ export async function registerUseCase(
 
   if (existingUser) {
     throw new AppError({
-      message: "Email already in use",
+      message: "Document already exists",
       statusCode: 409,
       isOperational: true,
       cause: [
         {
           path: ["email"],
           value: body.email,
+          message: "Email already in use",
         },
       ],
     });
@@ -47,13 +48,14 @@ export async function loginUseCase(
 
   if (!user) {
     throw new AppError({
-      message: "User could not found",
+      message: "Document could not found",
       statusCode: 404,
       isOperational: true,
       cause: [
         {
           path: ["email"],
           value: body.email,
+          message: "Email not found",
         },
       ],
     });
@@ -66,13 +68,14 @@ export async function loginUseCase(
 
   if (!isPasswordCorrect) {
     throw new AppError({
-      message: "Incorrect password",
+      message: "Failed to authorize",
       statusCode: 403,
       isOperational: true,
       cause: [
         {
           path: ["password"],
           value: body.password,
+          message: "Password is incorrect",
         },
       ],
     });
