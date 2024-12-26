@@ -2,7 +2,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useButtonToggleFlag } from "../common/customHooks";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { Link } from "@tanstack/react-router";
-import { RegisterForm as TRegisterForm } from "../libs/zod/inferredTypes";
+import { RegisterForm as TRegisterForm } from "../libs/zod/types";
 import { registerFormSchema } from "../libs/zod/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -19,8 +19,8 @@ export default function RegisterForm() {
 
   const submitHandler: SubmitHandler<TRegisterForm> = async () => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-      throw new Error("Email already in use");
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      throw new Error("");
     } catch {
       setError("root", { message: "Failed to create an account" });
     }
