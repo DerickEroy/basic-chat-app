@@ -1,7 +1,7 @@
 {
   "scripts": {
     "test": "npx jest --verbose",
-    "dev": "npx ts-node ./src/server.ts"
+    "dev": "nodemon src/server.ts"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

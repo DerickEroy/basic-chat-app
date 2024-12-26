@@ -21,7 +21,7 @@ export async function registerController(
 
     _setCookie(result, res);
 
-    res.status(201).send();
+    res.status(201).send({ redirectUrl: "/" });
   } catch (error) {
     next(error);
   }
@@ -37,7 +37,7 @@ export async function loginController(
 
     _setCookie(result, res);
 
-    res.status(200).send();
+    res.status(200).send({ redirectUrl: "/" });
   } catch (error) {
     next(error);
   }
