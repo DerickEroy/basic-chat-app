@@ -31,6 +31,7 @@ export default function RegisterForm() {
       onSubmit={handleSubmit(submitHandler)}
       className="container"
       noValidate
+      data-testid="registerForm"
     >
       <h4>Register</h4>
       {errors.root && (
