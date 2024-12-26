@@ -1,10 +1,19 @@
 import express from "express";
-import { loginController, registerController } from "@src/controllers/user";
+import {
+  authCheckController,
+  loginController,
+  registerController,
+} from "@src/controllers/user";
 import { userRegisterDTOSchema, userLoginDTOSchema } from "@libs/zod";
-import { validateRequestBody } from "@src/common/middlewares";
+import {
+  validateRequestBody,
+  verifySessionToken,
+} from "@src/common/middlewares";
 
 export default function userRouter() {
   const router = express.Router();
+
+  router.get("/auth-check", verifySessionToken, authCheckController);
 
   router.post(
     "/register",

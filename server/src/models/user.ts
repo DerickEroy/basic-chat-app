@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { SECRET_KEY } from "@src/common/config";
-import type { User } from "@src/common/types";
+import type { User } from "@src/types";
 
 export const userSchema = new mongoose.Schema<
   User,
@@ -45,7 +45,6 @@ export const userSchema = new mongoose.Schema<
       sessionToken: {
         type: String,
         cast: "must be a string",
-        default: null,
       },
     },
     _id: false,
@@ -54,7 +53,7 @@ export const userSchema = new mongoose.Schema<
 });
 
 /** Sets and returns the hashed version of the password property*/
-userSchema.method("hashPassword", async function (salt = 10) {
+userSchema.method("hashPassword", function (salt = 10) {
   const hashedPassword = bcrypt.hashSync(this.auth.password, salt);
 
   this.auth.password = hashedPassword;
@@ -63,7 +62,7 @@ userSchema.method("hashPassword", async function (salt = 10) {
 });
 
 /** Sets and returns the session token property */
-userSchema.method("createSessionToken", async function () {
+userSchema.method("createSessionToken", function () {
   const sessionToken = jwt.sign({ role: this.auth.role }, SECRET_KEY, {
     expiresIn: "24h",
     subject: this.id,

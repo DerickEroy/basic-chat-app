@@ -1,4 +1,7 @@
-/** Cause property of app error */
+/** Role of user */
+export type Role = "user" | "admin";
+
+/** Cause of app error */
 export type Cause = {
   path: (string | number)[];
   value?: unknown;
@@ -10,7 +13,7 @@ export interface User {
   lName: string;
   email: string;
   auth: {
-    role: "user" | "admin";
+    role: Role;
     password: string;
     sessionToken: null | string;
   };

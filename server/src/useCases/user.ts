@@ -1,7 +1,24 @@
 import bcrypt from "bcryptjs";
 import { UserModel } from "@models/user";
 import { AppError } from "@src/common/errors";
-import type { RegisterUserDTO, LoginUserDTO } from "@common/types";
+import type { RegisterUserDTO, LoginUserDTO } from "@src/types";
+import type { JwtPayload } from "jsonwebtoken";
+
+export async function authCheckUseCase(
+  decodedToken: string | JwtPayload | undefined,
+  token: string | undefined,
+  model: typeof UserModel
+): Promise<void> {
+  const user = await model.findOne({ _id: (decodedToken as JwtPayload).sub });
+
+  if (!user || token !== user.auth.sessionToken) {
+    throw new AppError({
+      message: "Failed to authorize",
+      statusCode: 401,
+      isOperational: true,
+    });
+  }
+}
 
 export async function registerUseCase(
   body: RegisterUserDTO,
@@ -48,14 +65,14 @@ export async function loginUseCase(
 
   if (!user) {
     throw new AppError({
-      message: "Document could not found",
+      message: "Document could not be found",
       statusCode: 404,
       isOperational: true,
       cause: [
         {
           path: ["email"],
           value: body.email,
-          message: "Email not found",
+          message: "Email does not exist",
         },
       ],
     });

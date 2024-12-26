@@ -1,5 +1,9 @@
 import express from "express";
-import { loginUseCase, registerUseCase } from "@src/useCases/user";
+import {
+  authCheckUseCase,
+  loginUseCase,
+  registerUseCase,
+} from "@src/useCases/user";
 import { UserModel } from "@src/models/user";
 
 function _setCookie(token: string, res: express.Response) {
@@ -11,6 +15,21 @@ function _setCookie(token: string, res: express.Response) {
   });
 }
 
+// GET /users/auth-check
+export async function authCheckController(
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) {
+  try {
+    await authCheckUseCase(req.decodedToken, req.cookies.jwt, UserModel);
+    res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+}
+
+// POST /users/register
 export async function registerController(
   req: express.Request,
   res: express.Response,
@@ -27,6 +46,7 @@ export async function registerController(
   }
 }
 
+// POST /users/login
 export async function loginController(
   req: express.Request,
   res: express.Response,

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import type { Cause } from "./types";
+import type { Cause } from "../types";
 import { ZodError } from "zod";
 
 export class AppError extends Error {
