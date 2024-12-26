@@ -6,7 +6,6 @@ import { registerFormSchema } from "../libs/zod";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import type { NonFunctionKeys } from "utility-types";
 import type {
   RegisterFormWithConfirmPassword,
   RegisterForm as TRegisterForm,
@@ -36,7 +35,7 @@ export default function RegisterForm() {
         if (error.response) {
           const appError = new ParsedAppError(error.response.data);
 
-          const fields: NonFunctionKeys<RegisterFormWithConfirmPassword>[] = [
+          const fields: (keyof RegisterFormWithConfirmPassword)[] = [
             "fName",
             "lName",
             "email",

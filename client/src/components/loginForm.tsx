@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
-import type { NonFunctionKeys } from "utility-types";
 import type { LoginForm as TLoginForm } from "../common/types";
 
 export default function LoginForm() {
@@ -33,7 +32,7 @@ export default function LoginForm() {
         if (error.response) {
           const appError = new ParsedAppError(error.response.data);
 
-          const fields: NonFunctionKeys<TLoginForm>[] = ["email", "password"];
+          const fields: (keyof TLoginForm)[] = ["email", "password"];
 
           fields.forEach((field) => {
             const cause = appError.getPropertyCause(field);
