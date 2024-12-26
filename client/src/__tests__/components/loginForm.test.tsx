@@ -1,10 +1,10 @@
 import { describe, test, expect } from "vitest";
 import { createTestRouter, renderComponent } from "../utils";
-import RegisterForm from "../../components/registerForm";
+import LoginForm from "../../components/loginForm";
 
-const router = createTestRouter(RegisterForm);
+const router = createTestRouter(LoginForm);
 
-describe(RegisterForm, () => {
+describe(LoginForm, () => {
   test("render the form", () => {
     const render = renderComponent(router);
     expect(render.getByTestId("form")).toBeInTheDocument();

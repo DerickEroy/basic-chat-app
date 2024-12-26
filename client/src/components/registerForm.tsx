@@ -1,42 +1,78 @@
-import { SubmitHandler, useForm } from "react-hook-form";
-import { useButtonToggleFlag } from "../common/customHooks";
-import { FaEye, FaEyeSlash } from "react-icons/fa6";
-import { Link } from "@tanstack/react-router";
-import { RegisterForm as TRegisterForm } from "../libs/zod/types";
-import { registerFormSchema } from "../libs/zod/schemas";
+import axios from "../libs/axios";
+import { useForm } from "react-hook-form";
+import { isAxiosError } from "axios";
+import { ParsedAppError } from "../common/utils";
+import { registerFormSchema } from "../libs/zod";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import type { NonFunctionKeys } from "utility-types";
+import type {
+  RegisterFormWithConfirmPassword,
+  RegisterForm as TRegisterForm,
+} from "../common/types";
 
 export default function RegisterForm() {
-  const { handler, flag } = useButtonToggleFlag();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     setError,
     formState: { errors, isSubmitting },
-  } = useForm<TRegisterForm>({
+  } = useForm<TRegisterForm & { confirmPassword: string }>({
     resolver: zodResolver(registerFormSchema),
   });
 
-  const submitHandler: SubmitHandler<TRegisterForm> = async () => {
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      throw new Error("");
-    } catch {
-      setError("root", { message: "Failed to create an account" });
-    }
-  };
+  const submitHandler = useMutation({
+    mutationFn: (data: TRegisterForm) =>
+      axios.post("http://localhost:4000/users/register", data),
+    onSuccess: (res) => {
+      if (res.status === 201) {
+        navigate({ to: res.data.redirectUrl });
+      }
+    },
+    onError: (error) => {
+      if (isAxiosError(error)) {
+        if (error.response) {
+          const appError = new ParsedAppError(error.response.data);
+
+          const fields: NonFunctionKeys<RegisterFormWithConfirmPassword>[] = [
+            "fName",
+            "lName",
+            "email",
+            "password",
+            "confirmPassword",
+          ];
+
+          fields.forEach((field) => {
+            const cause = appError.getPropertyCause(field);
+
+            if (cause) {
+              setError(field, { message: cause.message });
+            }
+          });
+        } else {
+          throw new Error("Response data is missing.");
+        }
+      } else {
+        setError("root", { message: "Failed to create an account." });
+      }
+    },
+  });
 
   return (
     <form
-      onSubmit={handleSubmit(submitHandler)}
+      onSubmit={handleSubmit(
+        async (data) => await submitHandler.mutateAsync(data)
+      )}
       className="container"
       noValidate
-      data-testid="registerForm"
+      data-testid="form"
     >
       <h4>Register</h4>
-      {errors.root && (
+      {errors.root ? (
         <small className="text-danger">{errors.root?.message}</small>
-      )}
+      ) : null}
       <div className="row">
         <div className="col-sm form-group">
           <label htmlFor="fName">First name</label>
@@ -45,7 +81,7 @@ export default function RegisterForm() {
             type="text"
             id="fName"
             placeholder="John"
-            className={`form-control ${errors.fName && "is-invalid"}`}
+            className={`form-control ${errors.fName ? "is-invalid" : ""}`}
           />
           <small className="invalid-feedback">{errors.fName?.message}</small>
         </div>
@@ -54,8 +90,9 @@ export default function RegisterForm() {
           <input
             {...register("lName")}
             type="text"
+            id="lName"
             placeholder="Doe"
-            className={`form-control ${errors.lName && "is-invalid"}`}
+            className={`form-control ${errors.lName ? "is-invalid" : ""}`}
           />
           <small className="invalid-feedback">{errors.lName?.message}</small>
         </div>
@@ -67,7 +104,7 @@ export default function RegisterForm() {
           type="email"
           id="email"
           placeholder="example@mail.com"
-          className={`form-control ${errors.email && "is-invalid"}`}
+          className={`form-control ${errors.email ? "is-invalid" : ""}`}
         />
         <small className="invalid-feedback">{errors.email?.message}</small>
       </div>
@@ -76,16 +113,10 @@ export default function RegisterForm() {
         <div className="input-group">
           <input
             {...register("password")}
-            type={flag ? "text" : "password"}
+            type="password"
             id="password"
-            className={`form-control ${errors.password && "is-invalid"}`}
+            className={`form-control ${errors.password ? "is-invalid" : ""}`}
           />
-          <button
-            onClick={handler}
-            className="btn input-group-text border d-grid"
-          >
-            {flag ? <FaEyeSlash /> : <FaEye />}
-          </button>
           <small className="invalid-feedback">{errors.password?.message}</small>
         </div>
       </div>
@@ -95,7 +126,7 @@ export default function RegisterForm() {
           {...register("confirmPassword")}
           type="password"
           id="confirmPassword"
-          className={`form-control ${errors.confirmPassword && "is-invalid"}`}
+          className={`form-control ${errors.confirmPassword ? "is-invalid" : ""}`}
         />
         <small className="invalid-feedback">
           {errors.confirmPassword?.message}

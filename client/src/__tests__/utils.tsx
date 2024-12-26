@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
   RouterProvider,
@@ -26,5 +27,11 @@ export function createTestRouter(component: () => JSX.Element) {
 }
 
 export function renderComponent(router: ReturnType<typeof createTestRouter>) {
-  return render(<RouterProvider router={router} />);
+  const queryClient = new QueryClient();
+
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  );
 }
