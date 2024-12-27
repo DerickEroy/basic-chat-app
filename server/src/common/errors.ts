@@ -55,6 +55,16 @@ export class AppError extends Error {
     });
   }
 
+  static badRequest(cause: Cause, originalError?: Error) {
+    return new AppError({
+      message: "Validation failed",
+      statusCode: 400,
+      isOperational: true,
+      originalError,
+      cause,
+    });
+  }
+
   static forbidden(cause: Cause, originalError?: Error) {
     return new AppError({
       message: "Access denied",
@@ -77,8 +87,7 @@ export class AppError extends Error {
 }
 
 export function transformMongooseValidationError(
-  error: mongoose.Error.ValidationError,
-  message?: string
+  error: mongoose.Error.ValidationError
 ) {
   const cause: Cause = [];
 
@@ -90,13 +99,7 @@ export function transformMongooseValidationError(
     });
   }
 
-  return new AppError({
-    message: message ?? error.message,
-    statusCode: 400,
-    isOperational: true,
-    originalError: error,
-    cause,
-  });
+  return AppError.badRequest(cause, error);
 }
 
 export function transformZodError<Data extends Record<string, any>>(
@@ -119,11 +122,5 @@ export function transformZodError<Data extends Record<string, any>>(
     });
   }
 
-  return new AppError({
-    message: error.message,
-    statusCode: 400,
-    isOperational: true,
-    originalError: error,
-    cause,
-  });
+  return AppError.badRequest(cause, error);
 }
