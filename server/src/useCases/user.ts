@@ -1,27 +1,13 @@
 import bcrypt from "bcryptjs";
 import { UserModel } from "@models/user";
 import { AppError } from "@src/common/errors";
-import type { RegisterUserDTO, LoginUserDTO } from "@src/types";
-import type { JwtPayload } from "jsonwebtoken";
-
-export async function authCheckUseCase(
-  decodedToken: string | JwtPayload | undefined,
-  token: string | undefined,
-  model: typeof UserModel
-): Promise<void> {
-  const user = await model.findOne({ _id: (decodedToken as JwtPayload).sub });
-
-  if (!user || token !== user.auth.sessionToken) {
-    throw new AppError({
-      message: "Failed to authorize",
-      statusCode: 401,
-      isOperational: true,
-    });
-  }
-}
+import type {
+  UserLoginRequest,
+  UserRegisterRequest,
+} from "@src/types/requests";
 
 export async function registerUseCase(
-  body: RegisterUserDTO,
+  body: UserRegisterRequest,
   model: typeof UserModel
 ): Promise<string> {
   const existingUser = await model.findOne({ email: body.email });
@@ -58,7 +44,7 @@ export async function registerUseCase(
 }
 
 export async function loginUseCase(
-  body: LoginUserDTO,
+  body: UserLoginRequest,
   model: typeof UserModel
 ): Promise<string> {
   const user = await model.findOne({ email: body.email });

@@ -1,13 +1,11 @@
 import express from "express";
 import mongoose from "mongoose";
-import jwt from "jsonwebtoken";
 import type { ZodSchema } from "zod";
 import {
   AppError,
   transformMongooseValidationError,
   transformZodError,
 } from "@common/errors";
-import { SECRET_KEY } from "./config";
 
 export function globalErrorHandler(
   error: any,
@@ -47,25 +45,4 @@ export function validateRequestBody(schema: ZodSchema) {
 
     next();
   };
-}
-
-export function verifySessionToken(
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
-) {
-  try {
-    req.decodedToken = jwt.verify(req.cookies.jwt, SECRET_KEY);
-    next();
-  } catch (error: any) {
-    const errorResponse = new AppError({
-      message: "Access denied",
-      statusCode: 401,
-      isOperational: true,
-      originalError: error,
-    });
-
-    res.clearCookie("jwt");
-    res.status(401).json(errorResponse.toObject());
-  }
 }

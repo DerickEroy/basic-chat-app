@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { SECRET_KEY } from "@src/common/config";
-import type { User } from "@src/types";
+import type { User } from "@src/types/entities";
 
 export const userSchema = new mongoose.Schema<
   User,
@@ -42,7 +42,7 @@ export const userSchema = new mongoose.Schema<
         required: [true, "required"],
         minLength: [8, "too short"],
       },
-      sessionToken: {
+      token: {
         type: String,
         cast: "must be a string",
       },
@@ -61,16 +61,16 @@ userSchema.method("hashPassword", function (salt = 10) {
   return hashedPassword;
 });
 
-/** Sets and returns the session token property */
+/** Sets and returns the token property */
 userSchema.method("createSessionToken", function () {
-  const sessionToken = jwt.sign({ role: this.auth.role }, SECRET_KEY, {
+  const token = jwt.sign({ role: this.auth.role }, SECRET_KEY, {
     expiresIn: "24h",
     subject: this.id,
   });
 
-  this.auth.sessionToken = sessionToken;
+  this.auth.token = token;
 
-  return sessionToken;
+  return token;
 });
 
 export const UserModel = mongoose.model("User", userSchema);

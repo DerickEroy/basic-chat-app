@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import type { Cause } from "../types";
-import { ZodError } from "zod";
+import type { ZodError } from "zod";
+import type { Cause } from "../types/common";
 
 export class AppError extends Error {
   name = this.constructor.name;
@@ -29,7 +29,6 @@ export class AppError extends Error {
     this.cause = cause;
   }
 
-  /** Returns an object with all properties */
   toObject() {
     return {
       ...this,
@@ -37,7 +36,6 @@ export class AppError extends Error {
     };
   }
 
-  /** Creates an instance of AppError from a native js Error */
   static default(error: Error) {
     return new AppError({
       message: error.message,
