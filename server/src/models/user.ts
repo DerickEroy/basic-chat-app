@@ -41,6 +41,7 @@ export const userSchema = new mongoose.Schema<
         cast: "must be a string",
         required: [true, "required"],
         minLength: [8, "too short"],
+        select: false,
       },
     },
     _id: false,

@@ -6,8 +6,8 @@ export class AppError extends Error {
   name = this.constructor.name;
   statusCode: number;
   isOperational: boolean;
-  originalError?: Error;
   cause?: Cause;
+  originalError?: Error;
 
   constructor({
     message,
@@ -42,6 +42,36 @@ export class AppError extends Error {
       statusCode: 500,
       isOperational: false,
       originalError: error,
+    });
+  }
+
+  static notFound(cause: Cause, originalError?: Error) {
+    return new AppError({
+      message: "Document not found",
+      statusCode: 404,
+      isOperational: true,
+      originalError,
+      cause,
+    });
+  }
+
+  static forbidden(cause: Cause, originalError?: Error) {
+    return new AppError({
+      message: "Access denied",
+      statusCode: 403,
+      isOperational: true,
+      originalError,
+      cause,
+    });
+  }
+
+  static conflict(cause: Cause, originalError?: Error) {
+    return new AppError({
+      message: "Document already exists",
+      statusCode: 409,
+      isOperational: true,
+      originalError,
+      cause,
     });
   }
 }

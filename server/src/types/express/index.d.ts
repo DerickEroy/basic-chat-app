@@ -1,4 +1,4 @@
-import type * as express from "express";
+import type * as express from "@src/types/express";
 import type { JwtPayload } from "jsonwebtoken";
 
 declare module "express-serve-static-core" {
