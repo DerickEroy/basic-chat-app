@@ -12,7 +12,7 @@ import type { WithConfirmPassword } from "../types/common";
 import type { AxiosError } from "axios";
 
 export default function RegisterForm() {
-  const [, setJwt] = useLocalStorage("jwt", "asd");
+  const [, setJwt] = useLocalStorage("jwt", "");
   const navigate = useNavigate();
   const {
     register,
