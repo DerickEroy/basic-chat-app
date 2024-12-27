@@ -55,9 +55,6 @@ export default function LoginForm() {
       data-testid="form"
     >
       <h4>Log In</h4>
-      {errors.root ? (
-        <small className="text-danger">{errors.root?.message}</small>
-      ) : null}
       <div className="form-group">
         <label htmlFor="email">Email</label>
         <input

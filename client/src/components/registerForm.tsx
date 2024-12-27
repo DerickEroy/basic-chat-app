@@ -65,9 +65,6 @@ export default function RegisterForm() {
       data-testid="form"
     >
       <h4>Register</h4>
-      {errors.root ? (
-        <small className="text-danger">{errors.root?.message}</small>
-      ) : null}
       <div className="row">
         <div className="col-sm form-group">
           <label htmlFor="fName">First name</label>
