@@ -42,7 +42,7 @@ export async function loginUseCase(
   body: UserLoginRequest,
   model: typeof UserModel
 ): Promise<string> {
-  const user = await model.findOne({ email: body.email });
+  const user = await model.findOne({ email: body.email }, "+auth.password");
 
   if (!user) {
     throw AppError.notFound([
