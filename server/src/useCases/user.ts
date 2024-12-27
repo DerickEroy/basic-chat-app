@@ -60,7 +60,7 @@ export async function loginUseCase(
   );
 
   if (!isPasswordCorrect) {
-    throw AppError.forbidden([
+    throw AppError.unauthorized([
       {
         path: ["password"],
         value: body.password,

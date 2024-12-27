@@ -65,10 +65,10 @@ export class AppError extends Error {
     });
   }
 
-  static forbidden(cause: Cause, originalError?: Error) {
+  static unauthorized(cause: Cause, originalError?: Error) {
     return new AppError({
-      message: "Access denied",
-      statusCode: 403,
+      message: "Unauthorized",
+      statusCode: 401,
       isOperational: true,
       originalError,
       cause,
