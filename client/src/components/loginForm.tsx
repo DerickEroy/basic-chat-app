@@ -24,7 +24,7 @@ export default function LoginForm() {
 
   const submitHandler = useMutation({
     mutationFn: (data: UserLoginRequest) =>
-      axios.post<AuthResponse>("http://localhost:4000/users/login", data),
+      axios.post<AuthResponse>("/users/login", data),
     onSuccess: (res) => {
       setJwt(res.data.jwt);
       navigate({ to: res.data.redirectUrl });

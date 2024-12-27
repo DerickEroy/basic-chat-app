@@ -25,7 +25,7 @@ export default function RegisterForm() {
 
   const submitHandler = useMutation({
     mutationFn: (data: UserRegisterRequest) =>
-      axios.post<AuthResponse>("http://localhost:4000/users/register", data),
+      axios.post<AuthResponse>("/users/register", data),
     onSuccess: (res) => {
       setJwt(res.data.jwt);
       navigate({ to: res.data.redirectUrl });
