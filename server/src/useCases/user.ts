@@ -36,7 +36,7 @@ export async function registerUseCase(
 
   user.hashPassword();
 
-  const token = user.createSessionToken();
+  const token = user.createToken();
 
   await user.save();
 
@@ -84,7 +84,7 @@ export async function loginUseCase(
     });
   }
 
-  const token = user.createSessionToken();
+  const token = user.createToken();
 
   await user.save();
 

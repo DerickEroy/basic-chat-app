@@ -9,7 +9,7 @@ export const userSchema = new mongoose.Schema<
   mongoose.Model<User>,
   {
     hashPassword(salt?: number): string;
-    createSessionToken(): string;
+    createToken(): string;
   }
 >({
   fName: {
