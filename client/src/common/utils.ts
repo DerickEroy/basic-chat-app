@@ -1,6 +1,7 @@
-import type { AppError } from "./types";
+import { appErrorSchema } from "../libs/zod";
+import type { AppError } from "../types/common";
 
-export class ParsedAppError {
+export class ParsedAppError implements AppError {
   name: string;
   message: string;
   statusCode: number;
@@ -22,6 +23,18 @@ export class ParsedAppError {
     this.isOperational = isOperational;
     this.cause = cause;
     this.orginalError = originalError;
+  }
+
+  static parse(error: unknown, parseErrorMessage?: string) {
+    const appError = appErrorSchema.safeParse(error);
+
+    if (!appError.success) {
+      throw new Error(
+        parseErrorMessage ?? "Failed to parse the error response."
+      );
+    }
+
+    return new ParsedAppError(appError.data);
   }
 
   getPropertyCause(property: string) {

@@ -1,60 +1,55 @@
 import axios from "../libs/axios";
-import { isAxiosError } from "axios";
 import { ParsedAppError } from "../common/utils";
-import { loginFormSchema } from "../libs/zod";
+import { userLoginRequestSchema } from "../libs/zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
-import type { LoginForm as TLoginForm } from "../common/types";
+import { useLocalStorage } from "../common/hooks";
+import type { UserLoginRequest } from "../types/requests";
+import type { AuthResponse } from "../types/responses";
+import type { AxiosError } from "axios";
 
 export default function LoginForm() {
+  const [, setJwt] = useLocalStorage("jwt", "");
   const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     setError,
     formState: { errors, isSubmitting },
-  } = useForm<TLoginForm>({
-    resolver: zodResolver(loginFormSchema),
+  } = useForm<UserLoginRequest>({
+    resolver: zodResolver(userLoginRequestSchema),
   });
 
   const submitHandler = useMutation({
-    mutationFn: (data: TLoginForm) =>
-      axios.post("http://localhost:4000/users/login", data),
+    mutationFn: async (data: UserLoginRequest) =>
+      await axios.post<AuthResponse>("http://localhost:4000/users/login", data),
     onSuccess: (res) => {
-      if (res.status === 200) {
-        navigate({ to: res.data.redirectUrl });
-      }
+      setJwt(res.data.jwt);
+      navigate({ to: res.data.redirectUrl });
     },
-    onError: (error) => {
-      if (isAxiosError(error)) {
-        if (error.response) {
-          const appError = new ParsedAppError(error.response.data);
+    onError: (error: AxiosError) => {
+      const appError = ParsedAppError.parse(
+        error.response?.data,
+        "An error occurred while logging in."
+      );
 
-          const fields: (keyof TLoginForm)[] = ["email", "password"];
+      const fields: (keyof UserLoginRequest)[] = ["email", "password"];
 
-          fields.forEach((field) => {
-            const cause = appError.getPropertyCause(field);
+      fields.forEach((field) => {
+        const cause = appError.getPropertyCause(field);
 
-            if (cause) {
-              setError(field, { message: cause.message });
-            }
-          });
-        } else {
-          throw new Error("Response data is missing.");
+        if (cause) {
+          setError(field, { message: cause.message });
         }
-      } else {
-        setError("root", { message: "Failed to log in account." });
-      }
+      });
     },
   });
 
   return (
     <form
-      onSubmit={handleSubmit(
-        async (data) => await submitHandler.mutateAsync(data)
-      )}
+      onSubmit={handleSubmit((data) => submitHandler.mutateAsync(data))}
       className="container"
       noValidate
       data-testid="form"
