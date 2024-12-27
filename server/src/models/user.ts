@@ -42,17 +42,12 @@ export const userSchema = new mongoose.Schema<
         required: [true, "required"],
         minLength: [8, "too short"],
       },
-      token: {
-        type: String,
-        cast: "must be a string",
-      },
     },
     _id: false,
     required: [true, "required"],
   },
 });
 
-/** Sets and returns the hashed version of the password property*/
 userSchema.method("hashPassword", function (salt = 10) {
   const hashedPassword = bcrypt.hashSync(this.auth.password, salt);
 
@@ -61,14 +56,11 @@ userSchema.method("hashPassword", function (salt = 10) {
   return hashedPassword;
 });
 
-/** Sets and returns the token property */
-userSchema.method("createSessionToken", function () {
+userSchema.method("createToken", function () {
   const token = jwt.sign({ role: this.auth.role }, SECRET_KEY, {
     expiresIn: "24h",
     subject: this.id,
   });
-
-  this.auth.token = token;
 
   return token;
 });
