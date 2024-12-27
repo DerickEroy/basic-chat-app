@@ -23,8 +23,8 @@ export default function LoginForm() {
   });
 
   const submitHandler = useMutation({
-    mutationFn: async (data: UserLoginRequest) =>
-      await axios.post<AuthResponse>("http://localhost:4000/users/login", data),
+    mutationFn: (data: UserLoginRequest) =>
+      axios.post<AuthResponse>("http://localhost:4000/users/login", data),
     onSuccess: (res) => {
       setJwt(res.data.jwt);
       navigate({ to: res.data.redirectUrl });
@@ -49,7 +49,7 @@ export default function LoginForm() {
 
   return (
     <form
-      onSubmit={handleSubmit((data) => submitHandler.mutateAsync(data))}
+      onSubmit={handleSubmit((data) => submitHandler.mutate(data))}
       className="container"
       noValidate
       data-testid="form"
