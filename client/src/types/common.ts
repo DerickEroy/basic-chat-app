@@ -6,5 +6,3 @@ export interface AppError {
   cause?: { path: (string | number)[]; value?: unknown; message?: string }[];
   originalError?: Error;
 }
-
-export type WithConfirmPassword<T> = T & { confirmPassword: string };

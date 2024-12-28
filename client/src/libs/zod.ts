@@ -1,11 +1,8 @@
 import { z, ZodSchema } from "zod";
-import type { WithConfirmPassword } from "../types/common";
 import type { UserLoginRequest, UserRegisterRequest } from "../types/requests";
 
-export const userRegisterRequestSchema: ZodSchema<
-  WithConfirmPassword<UserRegisterRequest>
-> = z
-  .object({
+export const userRegisterRequestSchema: ZodSchema<UserRegisterRequest> =
+  z.object({
     fName: z.string().nonempty("First name is required."),
     lName: z.string().nonempty("Last name is required."),
     email: z.string().email("Invalid email address."),
@@ -13,11 +10,6 @@ export const userRegisterRequestSchema: ZodSchema<
       .string()
       .min(8, "Password too short.")
       .nonempty("Password is required."),
-    confirmPassword: z.string().nonempty("Confirm password is required."),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match.",
-    path: ["confirmPassword"],
   });
 
 export const userLoginRequestSchema: ZodSchema<UserLoginRequest> = z.object({

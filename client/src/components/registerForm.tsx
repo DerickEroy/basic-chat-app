@@ -8,7 +8,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import type { UserRegisterRequest } from "../types/requests";
 import type { AuthResponse } from "../types/responses";
-import type { WithConfirmPassword } from "../types/common";
 import type { AxiosError } from "axios";
 
 export default function RegisterForm() {
@@ -19,7 +18,7 @@ export default function RegisterForm() {
     handleSubmit,
     setError,
     formState: { errors, isSubmitting },
-  } = useForm<WithConfirmPassword<UserRegisterRequest>>({
+  } = useForm<UserRegisterRequest>({
     resolver: zodResolver(userRegisterRequestSchema),
   });
 
@@ -36,12 +35,11 @@ export default function RegisterForm() {
         "An error occurred while registering."
       );
 
-      const fields: (keyof WithConfirmPassword<UserRegisterRequest>)[] = [
+      const fields: (keyof UserRegisterRequest)[] = [
         "fName",
         "lName",
         "email",
         "password",
-        "confirmPassword",
       ];
 
       fields.forEach((field) => {
@@ -108,18 +106,6 @@ export default function RegisterForm() {
           />
           <small className="invalid-feedback">{errors.password?.message}</small>
         </div>
-      </div>
-      <div className="form-group">
-        <label htmlFor="confirmPassword">Confirm password</label>
-        <input
-          {...register("confirmPassword")}
-          type="password"
-          id="confirmPassword"
-          className={`form-control ${errors.confirmPassword ? "is-invalid" : ""}`}
-        />
-        <small className="invalid-feedback">
-          {errors.confirmPassword?.message}
-        </small>
       </div>
       <button
         type="submit"
