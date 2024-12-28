@@ -13,7 +13,7 @@ export function findOneController(model: mongoose.Model<any>) {
 
       if (!result) {
         throw new AppError({
-          message: "Document could not be found",
+          message: "Document not found",
           statusCode: 404,
           isOperational: true,
         });

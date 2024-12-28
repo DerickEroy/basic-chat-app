@@ -13,13 +13,18 @@ export async function registerUseCase(
   const existingUser = await model.findOne({ email: body.email });
 
   if (existingUser) {
-    throw AppError.conflict([
-      {
-        path: ["email"],
-        value: body.email,
-        message: "Email already in use",
-      },
-    ]);
+    throw new AppError({
+      message: "Document already exists",
+      statusCode: 409,
+      isOperational: true,
+      cause: [
+        {
+          path: ["email"],
+          value: body.email,
+          message: "Email already in use",
+        },
+      ],
+    });
   }
 
   const user = new model({
@@ -45,13 +50,18 @@ export async function loginUseCase(
   const user = await model.findOne({ email: body.email }, "+auth.password");
 
   if (!user) {
-    throw AppError.notFound([
-      {
-        path: ["email"],
-        value: body.email,
-        message: "Email does not exist",
-      },
-    ]);
+    throw new AppError({
+      message: "Validation failed",
+      statusCode: 400,
+      isOperational: true,
+      cause: [
+        {
+          path: ["email"],
+          value: body.email,
+          message: "Email does not exist",
+        },
+      ],
+    });
   }
 
   const isPasswordCorrect = bcrypt.compareSync(
@@ -60,13 +70,18 @@ export async function loginUseCase(
   );
 
   if (!isPasswordCorrect) {
-    throw AppError.unauthorized([
-      {
-        path: ["password"],
-        value: body.password,
-        message: "Password is incorrect",
-      },
-    ]);
+    throw new AppError({
+      message: "Unauthorized",
+      statusCode: 401,
+      isOperational: true,
+      cause: [
+        {
+          path: ["password"],
+          value: body.password,
+          message: "Password is incorrect",
+        },
+      ],
+    });
   }
 
   const token = user.createToken();

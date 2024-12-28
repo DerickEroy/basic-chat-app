@@ -44,46 +44,6 @@ export class AppError extends Error {
       originalError: error,
     });
   }
-
-  static notFound(cause: Cause, originalError?: Error) {
-    return new AppError({
-      message: "Document not found",
-      statusCode: 404,
-      isOperational: true,
-      originalError,
-      cause,
-    });
-  }
-
-  static badRequest(cause: Cause, originalError?: Error) {
-    return new AppError({
-      message: "Validation failed",
-      statusCode: 400,
-      isOperational: true,
-      originalError,
-      cause,
-    });
-  }
-
-  static unauthorized(cause: Cause, originalError?: Error) {
-    return new AppError({
-      message: "Unauthorized",
-      statusCode: 401,
-      isOperational: true,
-      originalError,
-      cause,
-    });
-  }
-
-  static conflict(cause: Cause, originalError?: Error) {
-    return new AppError({
-      message: "Document already exists",
-      statusCode: 409,
-      isOperational: true,
-      originalError,
-      cause,
-    });
-  }
 }
 
 export function transformMongooseValidationError(
@@ -99,7 +59,13 @@ export function transformMongooseValidationError(
     });
   }
 
-  return AppError.badRequest(cause, error);
+  return new AppError({
+    message: "Validation failed",
+    statusCode: 400,
+    isOperational: true,
+    originalError: error,
+    cause,
+  });
 }
 
 export function transformZodError<Data extends Record<string, any>>(
@@ -122,5 +88,11 @@ export function transformZodError<Data extends Record<string, any>>(
     });
   }
 
-  return AppError.badRequest(cause, error);
+  return new AppError({
+    message: "Validation failed",
+    statusCode: 400,
+    isOperational: true,
+    originalError: error,
+    cause,
+  });
 }
